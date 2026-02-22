@@ -44,7 +44,8 @@ dependencies:
   google_fonts: ^6.1.0    # لخطوط احترافية (مثل Cairo أو Tajawal)
   # Storage
   flutter_secure_storage: ^9.0.0 # لحفظ توكن Sanctum بأمان
-  
+  # Date/Number Formatting
+  intl: ^0.20.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8

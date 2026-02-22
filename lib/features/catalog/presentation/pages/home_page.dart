@@ -1,6 +1,8 @@
+import 'package:ahgzly_salon_app/core/routing/routes.dart';
 import 'package:ahgzly_salon_app/features/catalog/presentation/cubit/catalog_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_shimmer.dart';
@@ -13,7 +15,20 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<CatalogCubit>()..loadCatalog(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('احجزلي - الفروع والخدمات')),
+        appBar: AppBar(
+          title: const Text('احجزلي - الفروع والخدمات'),
+          actions: [
+            IconButton(
+              onPressed: () => context.push(
+                Routes.myAppointments,
+              ), // 👈 الانتقال لشاشة الحجوزات
+              icon: const Icon(
+                Icons.calendar_month_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
         body: BlocBuilder<CatalogCubit, CatalogState>(
           builder: (context, state) {
             if (state is CatalogLoading) {
@@ -78,33 +93,49 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   ...state.services.map(
-                    (service) => Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.grey.shade200),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                    (service) => InkWell(
+                      onTap: () {
+                        // نجلب أول فرع ديناميكياً من القائمة المحملة، أو يمكنك لاحقاً جعل المستخدم يضغط على الفرع أولاً
+                        final selectedBranch = state.branches.first;
+
+                        context.push(
+                          Routes.booking,
+                          extra: {
+                            'branchId':
+                                selectedBranch.id, // 💥 ديناميكي من الـ API
+                            'serviceId': service.id, // 💥 ديناميكي من الـ API
+                            'serviceName': service.name,
+                          },
+                        );
+                      },
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: Colors.grey.shade200),
                         ),
-                        title: Text(
-                          service.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          'المدة: ${service.durationMinutes} دقيقة',
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                        ),
-                        trailing: Text(
-                          '${service.price} ج.م',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                            fontSize: 16,
+                          title: Text(
+                            service.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            'المدة: ${service.durationMinutes} دقيقة',
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          trailing: Text(
+                            '${service.price} ج.م',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
