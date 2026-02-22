@@ -1,4 +1,5 @@
 import 'package:ahgzly_salon_app/features/auth/presentation/pages/login_page.dart';
+import 'package:ahgzly_salon_app/features/catalog/presentation/pages/home_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'routes.dart';
@@ -22,9 +23,7 @@ class AppRouter {
       ),
       GoRoute(
         path: Routes.home,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('الشاشة الرئيسية - قريباً')),
-        ),
+        builder: (context, state) => const HomePage()
       ),
     ],
   );
