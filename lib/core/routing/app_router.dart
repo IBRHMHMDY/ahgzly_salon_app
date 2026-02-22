@@ -1,22 +1,31 @@
+import 'package:ahgzly_salon_app/features/auth/presentation/pages/login_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
+import 'routes.dart';
 
 class AppRouter {
-  static const String loginPath = '/login';
-  static const String registerPath = '/register';
-  static const String homePath = '/'; // مسار الـ Catalog لاحقاً
-
   static final GoRouter router = GoRouter(
-    initialLocation: loginPath, // سنعدلها لاحقاً بناءً على وجود التوكن أم لا
+    // المسار الافتراضي عند فتح التطبيق
+    initialLocation: Routes.login,
+
+    // لاحقاً سنضيف منطق (Redirect) للتحقق مما إذا كان المستخدم يمتلك Token
+    // لنوجهه فوراً إلى Routes.home بدلاً من تسجيل الدخول
     routes: [
       GoRoute(
-        path: loginPath,
-        // builder: (context, state) => const LoginScreen(),
+        path: Routes.login,
+        builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
-        path: registerPath,
-        // builder: (context, state) => const RegisterScreen(),
+        path: Routes.register,
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: Text('شاشة إنشاء الحساب'))),
       ),
-      // ستتم إضافة مسارات الـ Catalog والحجوزات هنا
+      GoRoute(
+        path: Routes.home,
+        builder: (context, state) => const Scaffold(
+          body: Center(child: Text('الشاشة الرئيسية - قريباً')),
+        ),
+      ),
     ],
   );
 }

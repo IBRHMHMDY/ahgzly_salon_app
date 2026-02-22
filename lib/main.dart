@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
+import 'core/di/injection_container.dart' as di;
+import 'core/routing/app_router.dart';
+import 'core/theme/app_theme.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // تهيئة حقن الاعتماديات (GetIt)
+  await di.init();
+
+  runApp(const AhgzlyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class AhgzlyApp extends StatelessWidget {
+  const AhgzlyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Ahgzly Salon Online',
-      theme: ThemeData(
-        
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: Placeholder()
+    // استخدمنا MaterialApp.router بدلاً من MaterialApp العادية
+    return MaterialApp.router(
+      title: 'Ahgzly Salon',
+      debugShowCheckedModeBanner: false,
+
+      // تطبيق التصميم الموحد (Theme)
+      theme: AppTheme.lightTheme,
+
+      // تطبيق نظام التوجيه (GoRouter)
+      routerConfig: AppRouter.router,
     );
   }
 }
