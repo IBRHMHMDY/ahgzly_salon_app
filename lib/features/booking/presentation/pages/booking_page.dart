@@ -1,12 +1,13 @@
+import 'package:ahgzly_salon_app/core/di/injection_container.dart';
+import 'package:ahgzly_salon_app/core/theme/app_colors.dart';
+import 'package:ahgzly_salon_app/core/widgets/custom_button.dart';
+import 'package:ahgzly_salon_app/core/widgets/custom_shimmer.dart';
 import 'package:ahgzly_salon_app/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/di/injection_container.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/custom_shimmer.dart';
+
 
 class BookingPage extends StatelessWidget {
   final int branchId;
@@ -25,11 +26,10 @@ class BookingPage extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           sl<BookingCubit>()
-            // ..fetchAvailableSlots(branchId: branchId, serviceId: serviceId),
             ..fetchEmployees(
           branchId,
           serviceId,
-        ), // نكتفي باستدعاء الموظفين وهي ستتكفل بالباقي
+        ),
       child: Scaffold(
         appBar: AppBar(
           title: Text(

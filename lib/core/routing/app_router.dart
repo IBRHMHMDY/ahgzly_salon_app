@@ -20,7 +20,7 @@ class AppRouter {
           return MainWrapper(navigationShell: navigationShell);
         },
         branches: [
-          // الفرع الأول: الرئيسية (الفروع والخدمات)
+          // Home
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -29,7 +29,7 @@ class AppRouter {
               ),
             ],
           ),
-          // الفرع الثاني: حجوزاتي
+          // MyAppointments
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -38,7 +38,7 @@ class AppRouter {
               ),
             ],
           ),
-          // الفرع الثالث: الملف الشخصي
+          // MyProfile
           StatefulShellBranch(
             routes: [
               GoRoute(

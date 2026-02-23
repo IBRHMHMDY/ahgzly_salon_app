@@ -1,6 +1,5 @@
 import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_cubit.dart';
 import 'package:ahgzly_salon_app/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:ahgzly_salon_app/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:ahgzly_salon_app/features/catalog/presentation/cubit/catalog_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,8 +21,7 @@ class AhgzlyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => di.sl<AuthCubit>()..checkAuthStatus()),
-        BlocProvider(create: (_) => di.sl<CatalogCubit>()),
-        BlocProvider(create: (_) => di.sl<BookingCubit>()),
+        BlocProvider(create: (_) => di.sl<CatalogCubit>()..loadCatalog()),
         BlocProvider(create: (_) => di.sl<AppointmentsCubit>()),
       ],
       child: MaterialApp.router(

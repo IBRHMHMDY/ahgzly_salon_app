@@ -74,8 +74,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String email,
     String phone,
   ) async {
-    final response = await dioClient.dio.put(
-      ApiConstants.profile,
+    final response = await dioClient.dio.patch(
+      ApiConstants.editProfile,
       data: {'name': name, 'email': email, 'phone': phone},
     );
 
