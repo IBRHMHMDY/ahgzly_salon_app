@@ -4,5 +4,6 @@ class Routes {
   static const String home = '/home'; // الشاشة الرئيسية (الفروع والخدمات)
   static const String booking = '/booking';
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
   static const String myAppointments = '/my-appointments';
 }

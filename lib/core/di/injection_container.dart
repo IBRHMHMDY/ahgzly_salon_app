@@ -7,6 +7,8 @@ import 'package:ahgzly_salon_app/features/appointments/domain/usecases/update_st
 import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_cubit.dart';
 import 'package:ahgzly_salon_app/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:ahgzly_salon_app/features/auth/domain/usecases/check_auth_status_usecase.dart';
+import 'package:ahgzly_salon_app/features/auth/domain/usecases/get_profile_usecase.dart';
+import 'package:ahgzly_salon_app/features/auth/domain/usecases/update_profile_usecase.dart';
 import 'package:ahgzly_salon_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:ahgzly_salon_app/features/booking/domain/usecases/get_employees_usecase.dart';
 import 'package:ahgzly_salon_app/features/booking/presentation/cubit/booking_cubit.dart';
@@ -66,9 +68,7 @@ Future<void> init() async {
   // Features - Auth
   // =========================================================
   sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(
-      dioClient: sl<DioClient>(),
-    ),
+    () => AuthRemoteDataSourceImpl(dioClient: sl<DioClient>()),
   );
 
   sl.registerLazySingleton<AuthRepository>(
@@ -79,6 +79,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(sl()));
+  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
 
   sl.registerFactory<AuthCubit>(
     () => AuthCubit(
@@ -86,6 +88,8 @@ Future<void> init() async {
       registerUseCase: sl(),
       logoutUseCase: sl(),
       checkAuthStatusUseCase: sl(),
+      getProfileUseCase: sl(),
+      updateProfileUseCase: sl()
     ),
   );
 

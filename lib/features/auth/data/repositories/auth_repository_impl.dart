@@ -3,7 +3,7 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
-import '../../../../core/error/failures.dart'; // قم بتعديل المسار
+import '../../../../core/error/failures.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -52,11 +52,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      final token = await localDataSource.getToken();
-      if (token != null) {
-        await remoteDataSource.logout(token);
-        await localDataSource.clearToken();
-      }
+      await remoteDataSource.logout();
+      await localDataSource.clearToken();
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -74,6 +71,30 @@ class AuthRepositoryImpl implements AuthRepository {
       }
     } catch (e) {
       return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> getProfile() async {
+    try {
+      final user = await remoteDataSource.getProfile();
+      return Right(user);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> updateProfile(
+    String name,
+    String email,
+    String phone,
+  ) async {
+    try {
+      final user = await remoteDataSource.updateProfile(name, email, phone);
+      return Right(user);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 }

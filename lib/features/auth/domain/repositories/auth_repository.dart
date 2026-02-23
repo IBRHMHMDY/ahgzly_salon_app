@@ -12,4 +12,10 @@ abstract class AuthRepository {
   );
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, bool>> checkAuthStatus();
+  Future<Either<Failure, UserEntity>> getProfile();
+  Future<Either<Failure, UserEntity>> updateProfile(
+    String name,
+    String email,
+    String phone,
+  );
 }
