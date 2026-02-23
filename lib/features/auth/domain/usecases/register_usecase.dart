@@ -1,16 +1,19 @@
+import 'package:dartz/dartz.dart';
+import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
+import '../../../../core/error/failures.dart'; // تأكد من مسار ملف الفشل لديك
 
 class RegisterUseCase {
   final AuthRepository repository;
 
   RegisterUseCase(this.repository);
 
-  Future<void> call(
+  Future<Either<Failure, UserEntity>> call(
     String name,
     String email,
-    String phone,
     String password,
+    String phone,
   ) async {
-    return await repository.register(name, email, phone, password);
+    return await repository.register(name, email, password, phone);
   }
 }

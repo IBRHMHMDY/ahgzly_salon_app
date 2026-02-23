@@ -1,12 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'api_constants.dart';
 
 class DioClient {
   final Dio dio;
-  final FlutterSecureStorage secureStorage;
 
-  DioClient({required this.dio, required this.secureStorage}) {
+  DioClient({required this.dio, required Interceptor authInterceptor}) {
     dio.options.baseUrl = ApiConstants.baseUrl;
     dio.options.connectTimeout = const Duration(seconds: 10);
     dio.options.receiveTimeout = const Duration(seconds: 10);
@@ -15,27 +13,8 @@ class DioClient {
       'Content-Type': 'application/json',
     };
 
-    // إضافة Interceptors للتعامل مع الـ Token والـ Logging
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          // جلب التوكن المحفوظ إن وجد
-          final token = await secureStorage.read(key: 'auth_token');
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          return handler.next(response);
-        },
-        onError: (DioException e, handler) {
-          // هنا يمكننا لاحقاً معالجة انتهاء التوكن (401 Unauthorized)
-          // لتسجيل الخروج تلقائياً
-          return handler.next(e);
-        },
-      ),
-    );
+    // استخدام الـ AuthInterceptor المنفصل
+    dio.interceptors.add(authInterceptor);
 
     // إضافة LogInterceptor مفيد جداً أثناء التطوير لمعرفة تفاصيل الطلبات
     dio.interceptors.add(

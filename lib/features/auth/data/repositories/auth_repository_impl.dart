@@ -1,34 +1,79 @@
-import 'package:ahgzly_salon_app/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:ahgzly_salon_app/features/auth/domain/repositories/auth_repository.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dartz/dartz.dart';
+import '../../domain/entities/user_entity.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_local_data_source.dart';
+import '../datasources/auth_remote_data_source.dart';
+import '../../../../core/error/failures.dart'; // قم بتعديل المسار
 
-
-// لاحظ استخدام implements
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
-  final FlutterSecureStorage secureStorage;
+  final AuthLocalDataSource localDataSource;
 
   AuthRepositoryImpl({
     required this.remoteDataSource,
-    required this.secureStorage,
+    required this.localDataSource,
   });
 
   @override
-  Future<void> login(String email, String password) async {
-    final data = await remoteDataSource.login(email, password);
-    final token = data['token'];
-    await secureStorage.write(key: 'auth_token', value: token);
+  Future<Either<Failure, UserEntity>> login(
+    String email,
+    String password,
+  ) async {
+    try {
+      final result = await remoteDataSource.login(email, password);
+      await localDataSource.cacheToken(result['token']);
+      return Right(result['user']);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<void> register(
+  Future<Either<Failure, UserEntity>> register(
     String name,
     String email,
-    String phone,
     String password,
+    String phone,
   ) async {
-    final data = await remoteDataSource.register(name, email, phone, password);
-    final token = data['token'];
-    await secureStorage.write(key: 'auth_token', value: token);
+    try {
+      final result = await remoteDataSource.register(
+        name,
+        email,
+        password,
+        phone,
+      );
+      await localDataSource.cacheToken(result['token']);
+      return Right(result['user']);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      final token = await localDataSource.getToken();
+      if (token != null) {
+        await remoteDataSource.logout(token);
+        await localDataSource.clearToken();
+      }
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> checkAuthStatus() async {
+    try {
+      final token = await localDataSource.getToken();
+      if (token != null && token.isNotEmpty) {
+        return const Right(true);
+      } else {
+        return const Right(false);
+      }
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
   }
 }

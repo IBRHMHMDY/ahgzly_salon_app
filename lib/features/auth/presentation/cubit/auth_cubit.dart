@@ -1,45 +1,73 @@
-import 'package:ahgzly_salon_app/core/error/failures.dart';
-import 'package:ahgzly_salon_app/features/auth/domain/usecases/login_usecase.dart';
-import 'package:ahgzly_salon_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-part 'auth_state.dart';
+import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/register_usecase.dart';
+import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/check_auth_status_usecase.dart';
+import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  // الاعتماد على الـ UseCases بدلاً من الـ Repository
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
+  final LogoutUseCase logoutUseCase;
+  final CheckAuthStatusUseCase checkAuthStatusUseCase;
 
-  AuthCubit({required this.loginUseCase, required this.registerUseCase})
-    : super(AuthInitial());
+  AuthCubit({
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.logoutUseCase,
+    required this.checkAuthStatusUseCase,
+  }) : super(AuthInitial());
+
+  Future<void> checkAuthStatus() async {
+    emit(AuthLoading());
+    final failureOrStatus = await checkAuthStatusUseCase();
+
+    failureOrStatus.fold((failure) => emit(Unauthenticated()), (
+      isAuthenticated,
+    ) {
+      if (isAuthenticated) {
+        // ملاحظة: إذا كنت بحاجة لبيانات المستخدم عند فتح التطبيق،
+        // ستحتاج لعمل Endpoint لجلب بيانات الـ Profile واستدعائها هنا.
+        // حالياً سنكتفي بتغيير الحالة إذا كان التوكن موجوداً.
+        emit(Unauthenticated()); // أو استدعاء User Profile إذا كان متوفراً
+      } else {
+        emit(Unauthenticated());
+      }
+    });
+  }
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
-    try {
-      // استدعاء UseCase
-      await loginUseCase(email, password);
-      emit(AuthSuccess());
-    } on Failure catch (failure) {
-      emit(AuthError(failure.message));
-    } catch (e) {
-      emit(AuthError("حدث خطأ غير متوقع."));
-    }
+    final failureOrUser = await loginUseCase(email, password);
+
+    failureOrUser.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) => emit(Authenticated(user: user)),
+    );
   }
 
   Future<void> register(
     String name,
     String email,
-    String phone,
     String password,
+    String phone,
   ) async {
     emit(AuthLoading());
-    try {
-      await registerUseCase(name, email, phone, password);
-      emit(AuthSuccess());
-    } on Failure catch (failure) {
-      emit(AuthError(failure.message));
-    } catch (e) {
-      emit(AuthError("حدث خطأ غير متوقع."));
-    }
+    final failureOrUser = await registerUseCase(name, email, password, phone);
+
+    failureOrUser.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) => emit(Authenticated(user: user)),
+    );
+  }
+
+  Future<void> logout() async {
+    emit(AuthLoading());
+    final failureOrSuccess = await logoutUseCase();
+
+    failureOrSuccess.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (_) => emit(Unauthenticated()),
+    );
   }
 }

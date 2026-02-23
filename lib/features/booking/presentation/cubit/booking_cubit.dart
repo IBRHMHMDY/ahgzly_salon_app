@@ -47,8 +47,6 @@ class BookingCubit extends Cubit<BookingState> {
     } on Failure catch (failure) {
       emit(BookingSlotsError(failure.message));
     } catch (e) {
-      // 💡 نصيحة: اطبع الخطأ الحقيقي في الـ Console لتعرف ما يحدث
-      print("Cubit Error: $e");
       emit(BookingSlotsError("حدث خطأ أثناء جلب البيانات."));
     }
   }

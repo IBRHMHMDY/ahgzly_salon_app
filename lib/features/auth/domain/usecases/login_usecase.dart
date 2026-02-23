@@ -1,12 +1,17 @@
+import 'package:dartz/dartz.dart';
+import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
+import '../../../../core/error/failures.dart';
 
 class LoginUseCase {
   final AuthRepository repository;
 
   LoginUseCase(this.repository);
 
-  // دالة call تجعل الكلاس يُستدعى كأنه دالة مباشرة
-  Future<void> call(String email, String password) async {
+  Future<Either<Failure, UserEntity>> call(
+    String email,
+    String password,
+  ) async {
     return await repository.login(email, password);
   }
 }
