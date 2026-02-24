@@ -6,7 +6,6 @@ import 'package:ahgzly_salon_app/features/booking/domain/usecases/get_employees_
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-
 part 'booking_state.dart';
 
 class BookingCubit extends Cubit<BookingState> {
@@ -154,5 +153,12 @@ class BookingCubit extends Cubit<BookingState> {
     } catch (e) {
       return false; // في حال وجود خطأ في التنسيق
     }
+  }
+
+  // دالة لتصفير البيانات عند تسجيل الخروج
+  void reset() {
+    selectedEmployee = null;
+    selectedSlot = null;
+    emit(BookingInitial());
   }
 }

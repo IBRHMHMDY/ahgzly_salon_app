@@ -1,9 +1,10 @@
+import 'package:ahgzly_salon_app/core/routing/routes.dart';
+import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_cubit.dart';
+import 'package:ahgzly_salon_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:ahgzly_salon_app/features/auth/presentation/cubit/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/routing/routes.dart';
-import '../cubit/auth_cubit.dart';
-import '../cubit/auth_state.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -79,7 +80,14 @@ class ProfilePage extends StatelessWidget {
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () {
+                        // 1. تصفير بيانات المستخدم الحالي من الذاكرة (RAM) لمنع تسريبها
+                        context.read<AppointmentsCubit>().reset();
+
+                        // 2. مسح التوكن من الذاكرة المحلية واستدعاء API تسجيل الخروج
                         context.read<AuthCubit>().logout();
+
+                        // 3. التوجيه الإجباري لشاشة الدخول ومسح مسار الشاشات السابقة
+                        context.go(Routes.login);
                       },
                       icon: const Icon(Icons.logout),
                       label: const Text(

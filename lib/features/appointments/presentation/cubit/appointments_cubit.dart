@@ -32,4 +32,9 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
       (_) => fetchAppointments(),
     );
   }
+
+  // دالة لتصفير البيانات عند تسجيل الخروج
+  void reset() {
+    emit(AppointmentsInitial());
+  }
 }
