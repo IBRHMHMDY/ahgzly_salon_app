@@ -10,7 +10,9 @@ class CatalogLoading extends CatalogState {}
 class CatalogLoaded extends CatalogState {
   final List<BranchEntity> branches;
   final List<ServiceEntity> services;
-  CatalogLoaded(this.branches, this.services);
+  final BranchEntity? selectedBranch; // إضافة الفرع المختار
+
+  CatalogLoaded(this.branches, this.services, {this.selectedBranch});
 }
 
 class CatalogError extends CatalogState {

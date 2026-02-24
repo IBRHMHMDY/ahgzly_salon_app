@@ -236,7 +236,7 @@ class BookingPage extends StatelessWidget {
           );
           context.read<AppointmentsCubit>().fetchAppointments();
 
-          context.goNamed(Routes.myAppointments); // التوجيه
+          context.push(Routes.myAppointments); // التوجيه
         } else if (state is BookingSubmitError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

@@ -36,7 +36,7 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
               Tab(text: 'مكتمل'),
               Tab(text: 'مؤكد'),
               Tab(text: 'ملغي'),
-              Tab(text: 'الكل'),
+              // Tab(text: 'الكل'),
             ],
           ),
         ),
@@ -75,7 +75,7 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
                         .where((a) => a.status == 'cancelled')
                         .toList(),
                   ), // ملغي
-                   _buildAppointmentsList(state.appointments), // الكل
+                  //  _buildAppointmentsList(state.appointments), // الكل
                 ],
               );
             }

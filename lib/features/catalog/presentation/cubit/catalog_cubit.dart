@@ -15,7 +15,35 @@ class CatalogCubit extends Cubit<CatalogState> {
     final result = await getCatalogUseCase();
     result.fold(
       (failure) => emit(CatalogError(failure.message)),
-      (data) => emit(CatalogLoaded(data.$1, data.$2)), // $1 للفروع و $2 للخدمات
+      (data) {
+        final branches = data.$1;
+        final services = data.$2;
+      final defaultBranch = branches.isNotEmpty ? branches.first : null;
+      emit(
+        CatalogLoaded(
+          branches,
+          services,
+          selectedBranch: defaultBranch, // تمرير الفرع الافتراضي للحالة
+        ),
+      );
+      } 
     );
+  }
+
+  void selectBranch(BranchEntity branch) {
+    if (state is CatalogLoaded) {
+      final currentState = state as CatalogLoaded;
+
+      // ملاحظة: إذا أضفت branch_id مستقبلاً للخدمات، يمكنك فلترتها هنا هكذا:
+      // final filteredServices = currentState.services.where((s) => s.branchId == branch.id).toList();
+
+      emit(
+        CatalogLoaded(
+          currentState.branches,
+          currentState.services,
+          selectedBranch: branch, // تحديث الفرع المختار
+        ),
+      );
+    }
   }
 }
