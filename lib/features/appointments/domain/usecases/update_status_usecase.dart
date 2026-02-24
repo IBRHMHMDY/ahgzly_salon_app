@@ -1,4 +1,7 @@
 
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
+import 'package:dartz/dartz.dart';
+
 import '../repositories/appointments_repository.dart';
 
 class UpdateStatusUseCase {
@@ -6,7 +9,7 @@ class UpdateStatusUseCase {
 
   UpdateStatusUseCase(this.repository);
 
-  Future<void> call(int id, String status) async {
+  Future<Either<Failure,void>> call(int id, String status) async {
     return await repository.updateStatus(id,status);
   }
 }

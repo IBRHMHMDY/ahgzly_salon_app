@@ -1,5 +1,6 @@
-import '../../../../core/network/dio_client.dart';
-import '../../../../core/error/api_error_handler.dart';
+import 'package:ahgzly_salon_app/core/network/dio_client.dart';
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
+
 
 class CatalogRemoteDataSource {
   final DioClient dioClient;
@@ -14,7 +15,7 @@ class CatalogRemoteDataSource {
       return response.data['data'] ??
           response.data;
     } catch (e) {
-      throw ApiErrorHandler.handle(e);
+      throw ErrorHandler.handle(e);
     }
   }
 
@@ -25,7 +26,7 @@ class CatalogRemoteDataSource {
       ); 
       return response.data['data'] ?? response.data;
     } catch (e) {
-      throw ApiErrorHandler.handle(e);
+      throw ErrorHandler.handle(e);
     }
   }
 }

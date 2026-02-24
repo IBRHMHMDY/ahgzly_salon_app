@@ -1,11 +1,13 @@
-import '../repositories/booking_repository.dart';
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
+import 'package:ahgzly_salon_app/features/booking/domain/repositories/booking_repository.dart';
+import 'package:dartz/dartz.dart';
 
 class CreateAppointmentUseCase {
   final BookingRepository repository;
 
   CreateAppointmentUseCase(this.repository);
 
-  Future<void> call({
+  Future<Either<Failure, void>> call({
     required int branchId,
     required int employeeId,
     required int serviceId,
@@ -19,7 +21,6 @@ class CreateAppointmentUseCase {
       serviceId: serviceId,
       date: date,
       startTime: startTime,
-
     );
   }
 }

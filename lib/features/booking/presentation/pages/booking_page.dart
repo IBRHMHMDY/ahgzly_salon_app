@@ -1,7 +1,9 @@
 import 'package:ahgzly_salon_app/core/di/injection_container.dart';
+import 'package:ahgzly_salon_app/core/routing/routes.dart';
 import 'package:ahgzly_salon_app/core/theme/app_colors.dart';
 import 'package:ahgzly_salon_app/core/widgets/custom_button.dart';
-import 'package:ahgzly_salon_app/core/widgets/custom_shimmer.dart';
+import 'package:ahgzly_salon_app/core/widgets/app_shimmer.dart';
+import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_cubit.dart';
 import 'package:ahgzly_salon_app/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -150,10 +152,9 @@ class BookingPage extends StatelessWidget {
               mainAxisSpacing: 10,
             ),
             itemCount: 12,
-            itemBuilder: (_, _) => const CustomShimmer(
+            itemBuilder: (_, _) => const AppShimmer(
               width: double.infinity,
               height: 40,
-              borderRadius: 8,
             ),
           );
         } else if (state is BookingSlotsError) {
@@ -233,7 +234,9 @@ class BookingPage extends StatelessWidget {
               backgroundColor: Colors.green,
             ),
           );
-          context.go('/home'); // سنقوم بتحديث التوجيه في الخطوة القادمة
+          context.read<AppointmentsCubit>().fetchAppointments();
+
+          context.goNamed(Routes.myAppointments); // التوجيه
         } else if (state is BookingSubmitError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

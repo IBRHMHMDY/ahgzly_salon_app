@@ -2,77 +2,85 @@ import 'package:ahgzly_salon_app/features/appointments/domain/entities/appointme
 import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/di/injection_container.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_shimmer.dart';
+import '../../../../core/widgets/app_shimmer.dart';
 
-class MyAppointmentsPage extends StatelessWidget {
+class MyAppointmentsPage extends StatefulWidget {
   const MyAppointmentsPage({super.key});
 
   @override
+  State<MyAppointmentsPage> createState() => _MyAppointmentsPageState();
+}
+
+class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AppointmentsCubit>().fetchAppointments();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<AppointmentsCubit>()..fetchAppointments(),
-      child: DefaultTabController(
-        length: 5, // الكل، مكتمل، مؤكد، قيد الانتظار، ملغي
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('حجوزاتي'),
-            bottom: const TabBar(
-              isScrollable: true,
-              indicatorColor: AppColors.primary,
-              labelColor: AppColors.primary,
-              unselectedLabelColor: Colors.grey,
-              tabs: [
-                Tab(text: 'الكل'),
-                Tab(text: 'مكتمل'),
-                Tab(text: 'مؤكد'),
-                Tab(text: 'قيد الانتظار'),
-                Tab(text: 'ملغي'),
-              ],
-            ),
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('حجوزاتي'),
+          bottom: const TabBar(
+            isScrollable: true,
+            indicatorColor: AppColors.primary,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: Colors.grey,
+            tabs: [
+              Tab(text: 'قيد الانتظار'),
+              Tab(text: 'مكتمل'),
+              Tab(text: 'مؤكد'),
+              Tab(text: 'ملغي'),
+              Tab(text: 'الكل'),
+            ],
           ),
-          body: BlocBuilder<AppointmentsCubit, AppointmentsState>(
-            builder: (context, state) {
-              if (state is AppointmentsLoading) {
-                return _buildLoadingShimmer();
-              } else if (state is AppointmentsError) {
-                return Center(
-                  child: Text(
-                    state.message,
-                    style: const TextStyle(color: AppColors.error),
-                  ),
-                );
-              } else if (state is AppointmentsLoaded) {
-                return TabBarView(
-                  children: [
-                    _buildAppointmentsList(state.appointments), // الكل
-                    _buildAppointmentsList(
-                      state.appointments
-                          .where((a) => a.status == 'completed')
-                          .toList(),
-                    ), // مؤكد
-                    _buildAppointmentsList(
-                      state.appointments
-                          .where((a) => a.status == 'confirmed')
-                          .toList(),
-                    ), // مؤكد
-                    _buildAppointmentsList(
-                      state.appointments
-                          .where((a) => a.status == 'pending')
-                          .toList(),
-                    ), // قيد الانتظار
-                    _buildAppointmentsList(
-                      state.appointments
-                          .where((a) => a.status == 'cancelled')
-                          .toList(),
-                    ), // ملغي
-                  ],
-                );
-              }
-              return const SizedBox();
-            },
-          ),
+        ),
+        body: BlocBuilder<AppointmentsCubit, AppointmentsState>(
+          builder: (context, state) {
+            if (state is AppointmentsLoading) {
+              return _buildLoadingShimmer();
+            } else if (state is AppointmentsError) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: AppColors.error),
+                ),
+              );
+            } else if (state is AppointmentsLoaded) {
+              return TabBarView(
+                children: [
+                 _buildAppointmentsList(
+                    state.appointments
+                        .where((a) => a.status == 'pending')
+                        .toList(),
+                  ), // قيد الانتظار
+                  _buildAppointmentsList(
+                    state.appointments
+                        .where((a) => a.status == 'completed')
+                        .toList(),
+                  ), // مكتمل
+                  _buildAppointmentsList(
+                    state.appointments
+                        .where((a) => a.status == 'confirmed')
+                        .toList(),
+                  ), // مؤكد
+                  
+                  _buildAppointmentsList(
+                    state.appointments
+                        .where((a) => a.status == 'cancelled')
+                        .toList(),
+                  ), // ملغي
+                   _buildAppointmentsList(state.appointments), // الكل
+                ],
+              );
+            }
+            return const SizedBox();
+          },
         ),
       ),
     );
@@ -82,10 +90,7 @@ class MyAppointmentsPage extends StatelessWidget {
   Widget _buildAppointmentsList(List<AppointmentEntity> appointments) {
     if (appointments.isEmpty) {
       return const Center(
-        child: Text(
-          'لا توجد حجوزات في هذا القسم.',
-          style: TextStyle(color: Colors.grey),
-        ),
+        child: Text('لا توجد حجوزات.', style: TextStyle(color: Colors.grey)),
       );
     }
 
@@ -104,10 +109,9 @@ class MyAppointmentsPage extends StatelessWidget {
       itemCount: 5,
       itemBuilder: (context, index) => const Padding(
         padding: EdgeInsets.only(bottom: 12),
-        child: CustomShimmer(
+        child: AppShimmer(
           width: double.infinity,
           height: 120,
-          borderRadius: 12,
         ),
       ),
     );
@@ -133,8 +137,7 @@ class _AppointmentCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
@@ -225,7 +228,7 @@ class _AppointmentCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ]
+            ],
           ],
         ),
       ),
@@ -269,6 +272,4 @@ class _AppointmentCard extends StatelessWidget {
       ),
     );
   }
-
-
 }

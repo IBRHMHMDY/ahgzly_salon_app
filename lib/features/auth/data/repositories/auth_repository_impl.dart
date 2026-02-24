@@ -1,9 +1,9 @@
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
 import 'package:dartz/dartz.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
-import '../../../../core/error/failures.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -56,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.clearToken();
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(CacheFailure("حدث خطأ أثناء مسح بيانات الخروج، يرجى المحاولة لاحقاً."));
     }
   }
 
@@ -70,7 +70,9 @@ class AuthRepositoryImpl implements AuthRepository {
         return const Right(false);
       }
     } catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(CacheFailure(
+          "حدثت مشكلة في قراءة بيانات الجلسة، يرجى تسجيل الدخول مرة أخرى.",
+        ));
     }
   }
 

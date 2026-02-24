@@ -1,58 +1,85 @@
-import '../../domain/entities/employee_entity.dart';
-import '../../domain/entities/slot_entity.dart';
-import '../../domain/repositories/booking_repository.dart';
-import '../datasources/booking_remote_data_source.dart';
-import '../models/employee_model.dart';
-import '../models/slot_model.dart';
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
+import 'package:ahgzly_salon_app/features/booking/data/datasources/booking_remote_data_source.dart';
+import 'package:ahgzly_salon_app/features/booking/data/models/employee_model.dart';
+import 'package:ahgzly_salon_app/features/booking/data/models/slot_model.dart';
+import 'package:ahgzly_salon_app/features/booking/domain/entities/employee_entity.dart';
+import 'package:ahgzly_salon_app/features/booking/domain/entities/slot_entity.dart';
+import 'package:ahgzly_salon_app/features/booking/domain/repositories/booking_repository.dart';
+import 'package:dartz/dartz.dart';
+
 
 class BookingRepositoryImpl implements BookingRepository {
   final BookingRemoteDataSource remoteDataSource;
 
   BookingRepositoryImpl({required this.remoteDataSource});
+@override
+Future<Either<Failure, List<EmployeeEntity>>> getEmployees({
+  required int branchId,
+  required int serviceId,
+}) async {
+  try {
+    final remoteResult = await remoteDataSource.getEmployees(
+      branchId: branchId,
+      serviceId: serviceId,
+    );
+    return remoteResult.fold(
+      (failure) => Left(failure),
+      (remoteEmployees) {
+        final employees = remoteEmployees
+            .map<EmployeeEntity>((json) => EmployeeModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+        return Right(employees);
+      },
+    );
+  } catch (e) {
+    return Left(ErrorHandler.handle(e));
+  }
+}
 
   @override
-  Future<List<EmployeeEntity>> getEmployees({required int branchId, required int serviceId}) async {
-    final remoteEmployees = await remoteDataSource.getEmployees(
-      branchId: branchId, serviceId: serviceId
-    );
-    return remoteEmployees.map((json) => EmployeeModel.fromJson(json)).toList();
-  }
-
- @override
-  Future<List<SlotEntity>> getAvailableSlots({
+  Future<Either<Failure, List<SlotEntity>>> getAvailableSlots({
     required int branchId,
     required int employeeId,
     required int serviceId,
     required String date,
   }) async {
-    final List<dynamic> remoteSlots = await remoteDataSource.getAvailableSlots(
-      branchId: branchId,
-      employeeId: employeeId,
-      serviceId: serviceId,
-      date: date,
-    );
+    try {
+      final List<dynamic> remoteSlots = await remoteDataSource
+          .getAvailableSlots(
+            branchId: branchId,
+            employeeId: employeeId,
+            serviceId: serviceId,
+            date: date,
+          );
 
-    return remoteSlots
-        .map((time) => SlotModel.fromString(time.toString()))
-        .toList();
+      final slots = remoteSlots
+          .map<SlotEntity>((time) => SlotModel.fromString(time.toString()))
+          .toList();
+      return Right(slots);
+    } catch (e) {
+      return Left(ErrorHandler.handle(e));
+    }
   }
 
   @override
-  Future<void> createAppointment({
+  Future<Either<Failure, void>> createAppointment({
     required int branchId,
     required int employeeId,
     required int serviceId,
     required String date,
     required String startTime,
-
   }) async {
-    await remoteDataSource.createAppointment(
-      branchId: branchId,
-      employeeId: employeeId,
-      serviceId: serviceId,
-      date: date,
-      startTime: startTime,
-
-    );
+    try {
+      await remoteDataSource.createAppointment(
+        branchId: branchId,
+        employeeId: employeeId,
+        serviceId: serviceId,
+        date: date,
+        startTime: startTime,
+      );
+      return const Right(null);
+    } catch (e) {
+      return Left(ErrorHandler.handle(e));
+    }
   }
 }

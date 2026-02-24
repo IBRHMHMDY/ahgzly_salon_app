@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/custom_shimmer.dart';
+import '../../../../core/widgets/app_shimmer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -14,17 +14,6 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('احجزلي - الفروع والخدمات'),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () => context.push(
-        //       Routes.myAppointments,
-        //     ), // 👈 الانتقال لشاشة الحجوزات
-        //     icon: const Icon(
-        //       Icons.calendar_month_outlined,
-        //       color: AppColors.primary,
-        //     ),
-        //   ),
-        // ],
       ),
       body: BlocBuilder<CatalogCubit, CatalogState>(
         builder: (context, state) {
@@ -152,30 +141,28 @@ class HomePage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const CustomShimmer(width: 150, height: 24), // عنوان الفروع
+        const AppShimmer(width: 150, height: 24), // عنوان الفروع
         const SizedBox(height: 12),
         ...List.generate(
           2,
           (index) => const Padding(
             padding: EdgeInsets.only(bottom: 8.0),
-            child: CustomShimmer(
+            child: AppShimmer(
               width: double.infinity,
               height: 80,
-              borderRadius: 12,
             ), // كارت الفرع
           ),
         ),
         const SizedBox(height: 32),
-        const CustomShimmer(width: 150, height: 24), // عنوان الخدمات
+        const AppShimmer(width: 150, height: 24), // عنوان الخدمات
         const SizedBox(height: 12),
         ...List.generate(
           4,
           (index) => const Padding(
             padding: EdgeInsets.only(bottom: 8.0),
-            child: CustomShimmer(
+            child: AppShimmer(
               width: double.infinity,
               height: 80,
-              borderRadius: 12,
             ), // كارت الخدمة
           ),
         ),

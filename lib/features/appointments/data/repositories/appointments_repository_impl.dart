@@ -1,7 +1,10 @@
-import '../../domain/entities/appointment_entity.dart';
-import '../../domain/repositories/appointments_repository.dart';
-import '../datasources/appointments_remote_data_source.dart';
-import '../models/appointment_model.dart';
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
+import 'package:ahgzly_salon_app/features/appointments/data/datasources/appointments_remote_data_source.dart';
+import 'package:ahgzly_salon_app/features/appointments/data/models/appointment_model.dart';
+import 'package:ahgzly_salon_app/features/appointments/domain/entities/appointment_entity.dart';
+import 'package:ahgzly_salon_app/features/appointments/domain/repositories/appointments_repository.dart';
+import 'package:dartz/dartz.dart';
+
 
 class AppointmentsRepositoryImpl implements AppointmentsRepository {
   final AppointmentsRemoteDataSource remoteDataSource;
@@ -9,17 +12,27 @@ class AppointmentsRepositoryImpl implements AppointmentsRepository {
   AppointmentsRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<AppointmentEntity>> getMyAppointments() async {
+  Future<Either<Failure, List<AppointmentEntity>>> getMyAppointments() async {
     final remoteData = await remoteDataSource.getMyAppointments();
 
-    // تحويل كل JSON Map إلى AppointmentModel (الذي هو بالأساس Entity)
-    return remoteData
-        .map((json) => AppointmentModel.fromJson(json as Map<String, dynamic>))
+    final appointments = remoteData
+        .map<AppointmentEntity>(
+          (json) => AppointmentModel.fromJson(json as Map<String, dynamic>),
+        )
         .toList();
+    return Right(appointments);
   }
 
   @override
-  Future<void> updateStatus(int id, String status) async {
-    await remoteDataSource.updateAppointmentStatus(id, status);
+  Future<Either<Failure, void>> updateStatus(int id, String status) async {
+    try {
+      await remoteDataSource.updateAppointmentStatus(
+        id,
+        status,
+      );
+      return Right(null);
+    } catch (e) {
+      return Left(ErrorHandler.handle(e));
+    }
   }
 }

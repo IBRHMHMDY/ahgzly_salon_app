@@ -10,10 +10,11 @@ import 'core/theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  runApp(const AhgzlyApp());
+  runApp(AhgzlyApp());
 }
 
 class AhgzlyApp extends StatelessWidget {
+
   const AhgzlyApp({super.key});
 
   @override

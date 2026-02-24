@@ -1,6 +1,6 @@
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
 import 'package:dartz/dartz.dart';
 import '../entities/user_entity.dart';
-import '../../../../core/error/failures.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> login(String email, String password);

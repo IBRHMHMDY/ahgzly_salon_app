@@ -7,12 +7,14 @@ import 'package:ahgzly_salon_app/features/auth/presentation/pages/register_page.
 import 'package:ahgzly_salon_app/features/booking/presentation/pages/booking_page.dart';
 import 'package:ahgzly_salon_app/features/catalog/presentation/pages/home_page.dart';
 import 'package:ahgzly_salon_app/features/home/presentation/pages/main_wrapper.dart';
+import 'package:ahgzly_salon_app/features/splash/presentation/pages/splash_page.dart';
 import 'package:go_router/go_router.dart';
 import 'routes.dart';
 
 class AppRouter {
+  
   static final GoRouter router = GoRouter(
-    initialLocation: Routes.login,
+    initialLocation: Routes.splash,
     routes: [
       // 1. مسارات الـ Tabs (Bottom Navigation Bar)
       StatefulShellRoute.indexedStack(
@@ -51,6 +53,10 @@ class AppRouter {
       ),
 
       // 2. المسارات المستقلة (بدون Bottom Navigation Bar)
+      GoRoute(
+        path: Routes.splash,
+        builder: (context, state) => const SplashPage(),
+      ),
       GoRoute(
         path: Routes.login,
         builder: (context, state) => const LoginPage(),

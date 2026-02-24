@@ -1,7 +1,6 @@
-import 'package:dio/dio.dart';
+import 'package:ahgzly_salon_app/core/network/dio_client.dart';
+import 'package:ahgzly_salon_app/core/network/error_handler.dart';
 
-import '../../../../core/network/dio_client.dart';
-import '../../../../core/error/api_error_handler.dart';
 
 class AppointmentsRemoteDataSource {
   final DioClient dioClient;
@@ -17,7 +16,7 @@ class AppointmentsRemoteDataSource {
       }
       return [];
     } catch (e) {
-      throw ApiErrorHandler.handle(e);
+      throw ErrorHandler.handle(e);
     }
   }
 
@@ -28,10 +27,7 @@ class AppointmentsRemoteDataSource {
         '_method': 'POST',
       });
     } catch (e) {
-      if (e is DioException) {
-        print("Backend Error Body: ${e.response?.data}");
-      }
-      throw ApiErrorHandler.handle(e);
+      throw ErrorHandler.handle(e);
     }
   }
 }
