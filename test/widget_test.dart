@@ -1,30 +1,30 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ahgzly_salon_app/main.dart';
+import 'package:ahgzly_salon_app/main.dart' as app;
+import 'package:ahgzly_salon_app/core/di/injection_container.dart' as di;
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const AhgzlyApp());
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUpAll(() async {
+    await di.init();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('App boots without crashing (smoke test)', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const app.AhgzlyApp());
+
+    // يتيح لـ SplashPage بدء الـ Timer
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // انتظر مدة الـ Timer الموجود في Splash (2s)
+    await tester.pump(const Duration(seconds: 2));
+
+    // أي Pump إضافية لتصفية إعادة البناء بعد التنقل
+    await tester.pump();
+
+    expect(find.byType(MaterialApp), findsOneWidget);
   });
 }

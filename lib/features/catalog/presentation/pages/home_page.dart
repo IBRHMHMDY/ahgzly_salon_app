@@ -2,6 +2,7 @@ import 'package:ahgzly_salon_app/core/routing/routes.dart';
 import 'package:ahgzly_salon_app/core/theme/app_colors.dart';
 import 'package:ahgzly_salon_app/core/widgets/app_shimmer.dart';
 import 'package:ahgzly_salon_app/features/catalog/presentation/cubit/catalog_cubit.dart';
+import 'package:ahgzly_salon_app/features/catalog/presentation/cubit/catalog_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

@@ -1,7 +1,7 @@
-class ApiConstants {
-  // static const String baseUrl = "http://10.0.2.2:8000/api";
-  static const String baseUrl = "http://192.168.1.10:8000/api";
+import 'package:ahgzly_salon_app/core/config/env_config.dart';
 
+class ApiConstants {
+  static String get baseUrl => EnvConfig.ipDevice;
   // Endpoints
   static const String login = "/login";
   static const String register = "/register";

@@ -97,4 +97,8 @@ Future<void> updateProfile(String name, String email, String phone) async {
       (_) => emit(Unauthenticated()),
     );
   }
+
+  void forceLogout() {
+    emit(Unauthenticated());
+  }
 }

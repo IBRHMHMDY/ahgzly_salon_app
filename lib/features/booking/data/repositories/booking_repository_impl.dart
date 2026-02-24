@@ -18,19 +18,15 @@ Future<Either<Failure, List<EmployeeEntity>>> getEmployees({
   required int serviceId,
 }) async {
   try {
-    final remoteResult = await remoteDataSource.getEmployees(
+    final remoteEmployees = await remoteDataSource.getEmployees(
       branchId: branchId,
       serviceId: serviceId,
     );
-    return remoteResult.fold(
-      (failure) => Left(failure),
-      (remoteEmployees) {
+    
         final employees = remoteEmployees
             .map<EmployeeEntity>((json) => EmployeeModel.fromJson(json as Map<String, dynamic>))
             .toList();
         return Right(employees);
-      },
-    );
   } catch (e) {
     return Left(ErrorHandler.handle(e));
   }

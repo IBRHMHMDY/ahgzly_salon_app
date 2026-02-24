@@ -1,7 +1,14 @@
-part of 'appointments_cubit.dart';
 
 
-abstract class AppointmentsState {}
+import 'package:ahgzly_salon_app/features/appointments/domain/entities/appointment_entity.dart';
+import 'package:equatable/equatable.dart';
+
+abstract class AppointmentsState extends Equatable {
+  const AppointmentsState();
+
+  @override
+  List<Object?> get props => [];
+}
 
 class AppointmentsInitial extends AppointmentsState {}
 
@@ -9,10 +16,16 @@ class AppointmentsLoading extends AppointmentsState {}
 
 class AppointmentsLoaded extends AppointmentsState {
   final List<AppointmentEntity> appointments;
-  AppointmentsLoaded(this.appointments);
+  const AppointmentsLoaded(this.appointments);
+
+   @override
+  List<Object?> get props => [appointments];
 }
 
 class AppointmentsError extends AppointmentsState {
   final String message;
-  AppointmentsError(this.message);
+  const AppointmentsError(this.message);
+
+   @override
+  List<Object?> get props => [message];
 }

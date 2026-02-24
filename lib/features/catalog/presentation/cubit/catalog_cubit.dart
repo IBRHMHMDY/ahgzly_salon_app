@@ -1,9 +1,8 @@
 import 'package:ahgzly_salon_app/features/catalog/domain/entities/branch_entity.dart';
-import 'package:ahgzly_salon_app/features/catalog/domain/entities/service_entity.dart';
 import 'package:ahgzly_salon_app/features/catalog/domain/usecases/get_catalog_usecase.dart';
+import 'package:ahgzly_salon_app/features/catalog/presentation/cubit/catalog_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'catalog_state.dart';
 
 class CatalogCubit extends Cubit<CatalogState> {
   final GetCatalogUseCase getCatalogUseCase;

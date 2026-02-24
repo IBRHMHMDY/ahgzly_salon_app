@@ -82,7 +82,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
 
-  sl.registerFactory<AuthCubit>(
+  sl.registerLazySingleton<AuthCubit>(
     () => AuthCubit(
       loginUseCase: sl(),
       registerUseCase: sl(),

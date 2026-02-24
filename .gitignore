@@ -43,3 +43,44 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# Secrets / Keys
+**/*.jks
+**/*.keystore
+**/key.properties
+**/*.p12
+**/*.pem
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub/
+build/
+coverage/
+
+# Android
+android/.gradle/
+android/local.properties
+android/key.properties
+**/*.log
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Runner.xcworkspace/

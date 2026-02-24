@@ -1,14 +1,12 @@
 import 'package:ahgzly_salon_app/core/network/dio_client.dart';
 import 'package:ahgzly_salon_app/core/network/error_handler.dart';
-import 'package:dartz/dartz.dart';
-
 
 class BookingRemoteDataSource {
   final DioClient dioClient;
 
   BookingRemoteDataSource({required this.dioClient});
 
-Future<Either<Failure, List<dynamic>>> getEmployees({
+  Future<List<dynamic>> getEmployees({
     required int branchId,
     required int serviceId,
   }) async {
@@ -19,12 +17,12 @@ Future<Either<Failure, List<dynamic>>> getEmployees({
       );
       // التأكد من استخراج القائمة بأمان
       if (response.data is Map && response.data.containsKey('data')) {
-        return Right(response.data['data'] as List<dynamic>);
+        return response.data['data'] as List<dynamic>;
       }
-      // إذا لم تكن Map أو لا تحتوي على المفتاح، نعود بقائمة فارغة بدلاً من كسر التطبيق
-      return Right(<dynamic>[]);
+
+      return [];
     } catch (e) {
-      return Left(ErrorHandler.handle(e));
+      throw ErrorHandler.handle(e);
     }
   }
 
@@ -62,7 +60,6 @@ Future<Either<Failure, List<dynamic>>> getEmployees({
     required int serviceId,
     required String date,
     required String startTime,
-
   }) async {
     try {
       await dioClient.dio.post(
@@ -73,7 +70,6 @@ Future<Either<Failure, List<dynamic>>> getEmployees({
           'service_id': serviceId,
           'date': date,
           'start_time': startTime,
-
         },
       );
     } catch (e) {

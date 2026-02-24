@@ -1,21 +1,33 @@
-part of 'booking_cubit.dart';
+import 'package:ahgzly_salon_app/features/booking/domain/entities/slot_entity.dart';
+import 'package:equatable/equatable.dart';
 
+abstract class BookingState extends Equatable {
+  const BookingState();
 
-abstract class BookingState {}
+  @override
+  List<Object?> get props => [];
+}
 
-class BookingInitial extends BookingState {}
+class BookingInitial extends BookingState {
+  const BookingInitial();
+}
 
 // حالات جلب الأوقات
 class BookingSlotsLoading extends BookingState {}
 
 class BookingSlotsLoaded extends BookingState {
   final List<SlotEntity> slots;
-  BookingSlotsLoaded(this.slots);
+  const BookingSlotsLoaded(this.slots);
+  @override
+  List<Object?> get props => [slots];
 }
 
 class BookingSlotsError extends BookingState {
   final String message;
-  BookingSlotsError(this.message);
+  const BookingSlotsError(this.message);
+
+   @override
+  List<Object?> get props => [message];
 }
 
 // حالات تأكيد الحجز
@@ -25,5 +37,8 @@ class BookingSubmitSuccess extends BookingState {}
 
 class BookingSubmitError extends BookingState {
   final String message;
-  BookingSubmitError(this.message);
+  const BookingSubmitError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

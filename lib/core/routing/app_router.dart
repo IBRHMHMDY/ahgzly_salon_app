@@ -1,5 +1,9 @@
+import 'package:ahgzly_salon_app/core/di/injection_container.dart';
+import 'package:ahgzly_salon_app/core/routing/go_router_refresh_stream.dart';
 import 'package:ahgzly_salon_app/features/appointments/presentation/pages/my_appointments_page.dart';
 import 'package:ahgzly_salon_app/features/auth/domain/entities/user_entity.dart';
+import 'package:ahgzly_salon_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:ahgzly_salon_app/features/auth/presentation/cubit/auth_state.dart';
 import 'package:ahgzly_salon_app/features/auth/presentation/pages/edit_profile_page.dart';
 import 'package:ahgzly_salon_app/features/auth/presentation/pages/login_page.dart';
 import 'package:ahgzly_salon_app/features/auth/presentation/pages/profile_page.dart';
@@ -12,78 +16,104 @@ import 'package:go_router/go_router.dart';
 import 'routes.dart';
 
 class AppRouter {
-  
-  static final GoRouter router = GoRouter(
-    initialLocation: Routes.splash,
-    routes: [
-      // 1. مسارات الـ Tabs (Bottom Navigation Bar)
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return MainWrapper(navigationShell: navigationShell);
-        },
-        branches: [
-          // Home
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.home,
-                builder: (context, state) => const HomePage(),
-              ),
-            ],
-          ),
-          // MyAppointments
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.myAppointments,
-                builder: (context, state) => const MyAppointmentsPage(),
-              ),
-            ],
-          ),
-          // MyProfile
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.profile,
-                builder: (context, state) => const ProfilePage(),
-              ),
-            ],
-          ),
-        ],
-      ),
+  static GoRouter get router {
+    final authCubit = sl<AuthCubit>();
 
-      // 2. المسارات المستقلة (بدون Bottom Navigation Bar)
-      GoRoute(
-        path: Routes.splash,
-        builder: (context, state) => const SplashPage(),
-      ),
-      GoRoute(
-        path: Routes.login,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: Routes.register,
-        builder: (context, state) => const RegisterPage(),
-      ),
-      GoRoute(
-        path: Routes.editProfile,
-        builder: (context, state) {
-          // نستقبل بيانات المستخدم الحالية لملء الحقول مسبقاً
-          final user = state.extra as UserEntity;
-          return EditProfilePage(user: user);
-        },
-      ),
-      GoRoute(
-        path: Routes.booking,
-        builder: (context, state) {
-          final args = state.extra as Map<String, dynamic>? ?? {};
-          return BookingPage(
-            branchId: args['branchId'] ?? 0,
-            serviceId: args['serviceId'] ?? 0,
-            serviceName: args['serviceName'] ?? 'حجز خدمة',
-          );
-        },
-      ),
-    ],
-  );
+    return GoRouter(
+      initialLocation: Routes.splash,
+      refreshListenable: GoRouterRefreshStream(authCubit.stream),
+      redirect: (context, state) {
+        final authState = authCubit.state;
+        final isAuthed = authState is Authenticated;
+
+        final location = state.matchedLocation;
+
+        final isPublic =
+            location == Routes.splash ||
+            location == Routes.login ||
+            location == Routes.register;
+
+        if (!isAuthed && !isPublic) return Routes.login;
+
+        if (isAuthed &&
+            (location == Routes.login ||
+                location == Routes.register ||
+                location == Routes.splash)) {
+          return Routes.home;
+        }
+
+        return null;
+      },
+      routes: [
+        // 1. مسارات الـ Tabs (Bottom Navigation Bar)
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) {
+            return MainWrapper(navigationShell: navigationShell);
+          },
+          branches: [
+            // Home
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.home,
+                  builder: (context, state) => const HomePage(),
+                ),
+              ],
+            ),
+            // MyAppointments
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.myAppointments,
+                  builder: (context, state) => const MyAppointmentsPage(),
+                ),
+              ],
+            ),
+            // MyProfile
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.profile,
+                  builder: (context, state) => const ProfilePage(),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        // 2. المسارات المستقلة (بدون Bottom Navigation Bar)
+        GoRoute(
+          path: Routes.splash,
+          builder: (context, state) => const SplashPage(),
+        ),
+        GoRoute(
+          path: Routes.login,
+          builder: (context, state) => const LoginPage(),
+        ),
+        GoRoute(
+          path: Routes.register,
+          builder: (context, state) => const RegisterPage(),
+        ),
+        GoRoute(
+          path: Routes.editProfile,
+          builder: (context, state) {
+            // نستقبل بيانات المستخدم الحالية لملء الحقول مسبقاً
+            final user = state.extra as UserEntity;
+            return EditProfilePage(user: user);
+          },
+        ),
+        GoRoute(
+          path: Routes.booking,
+          builder: (context, state) {
+            final args = state.extra as Map<String, dynamic>? ?? {};
+            return BookingPage(
+              branchId: args['branchId'] ?? 0,
+              serviceId: args['serviceId'] ?? 0,
+              serviceName: args['serviceName'] ?? 'حجز خدمة',
+            );
+          },
+        ),
+      ],
+    );
+  }
 }

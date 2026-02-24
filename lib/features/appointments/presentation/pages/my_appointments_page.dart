@@ -1,9 +1,11 @@
+import 'package:ahgzly_salon_app/core/theme/app_colors.dart';
+import 'package:ahgzly_salon_app/core/widgets/app_shimmer.dart';
 import 'package:ahgzly_salon_app/features/appointments/domain/entities/appointment_entity.dart';
 import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_cubit.dart';
+import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/app_shimmer.dart';
+
 
 class MyAppointmentsPage extends StatefulWidget {
   const MyAppointmentsPage({super.key});
@@ -22,7 +24,7 @@ class _MyAppointmentsPageState extends State<MyAppointmentsPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('حجوزاتي'),

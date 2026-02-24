@@ -1,9 +1,8 @@
-import 'package:ahgzly_salon_app/features/appointments/domain/entities/appointment_entity.dart';
 import 'package:ahgzly_salon_app/features/appointments/domain/usecases/get_my_appointments_usecase.dart';
 import 'package:ahgzly_salon_app/features/appointments/domain/usecases/update_status_usecase.dart';
+import 'package:ahgzly_salon_app/features/appointments/presentation/cubit/appointments_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'appointments_state.dart';
 
 class AppointmentsCubit extends Cubit<AppointmentsState> {
   final GetMyAppointmentsUseCase getMyAppointmentsUseCase;

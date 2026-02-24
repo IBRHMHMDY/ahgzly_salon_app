@@ -3,10 +3,9 @@ import 'package:ahgzly_salon_app/features/booking/domain/entities/slot_entity.da
 import 'package:ahgzly_salon_app/features/booking/domain/usecases/create_appointment_usecase.dart';
 import 'package:ahgzly_salon_app/features/booking/domain/usecases/get_available_slots_usecase.dart';
 import 'package:ahgzly_salon_app/features/booking/domain/usecases/get_employees_usecase.dart';
+import 'package:ahgzly_salon_app/features/booking/presentation/cubit/booking_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-
-part 'booking_state.dart';
 
 class BookingCubit extends Cubit<BookingState> {
   final GetAvailableSlotsUseCase getAvailableSlotsUseCase;

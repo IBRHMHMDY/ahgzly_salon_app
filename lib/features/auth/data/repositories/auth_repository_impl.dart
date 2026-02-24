@@ -24,7 +24,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.cacheToken(result['token']);
       return Right(result['user']);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -45,7 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.cacheToken(result['token']);
       return Right(result['user']);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -56,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.clearToken();
       return const Right(null);
     } catch (e) {
-      return Left(CacheFailure("حدث خطأ أثناء مسح بيانات الخروج، يرجى المحاولة لاحقاً."));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -70,9 +70,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return const Right(false);
       }
     } catch (e) {
-      return Left(CacheFailure(
-          "حدثت مشكلة في قراءة بيانات الجلسة، يرجى تسجيل الدخول مرة أخرى.",
-        ));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -82,7 +80,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await remoteDataSource.getProfile();
       return Right(user);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -96,7 +94,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await remoteDataSource.updateProfile(name, email, phone);
       return Right(user);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ErrorHandler.handle(e));
     }
   }
 }

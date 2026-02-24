@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'api_constants.dart';
 
 class DioClient {
@@ -16,15 +17,16 @@ class DioClient {
     // استخدام الـ AuthInterceptor المنفصل
     dio.interceptors.add(authInterceptor);
 
-    // إضافة LogInterceptor مفيد جداً أثناء التطوير لمعرفة تفاصيل الطلبات
-    dio.interceptors.add(
-      LogInterceptor(
-        request: true,
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
-        error: true,
-      ),
-    );
+    if (kDebugMode) {
+      dio.interceptors.add(
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          error: true,
+        ),
+      );
+    }
   }
 }
